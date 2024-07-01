@@ -84,31 +84,66 @@ async def baixar_relatorio_nao_voado(data_inicio, data_fim, tipo_arquivo):
             )
             relatorios_button.click()
 
-            # --- Acessar Relatórios Não Voados ---
+            # Aguarde 2 segundos
+            time.sleep(2)
+
+            # Muda o contexto para o iframe
             iframe = WebDriverWait(driver, 20).until(
-                EC.frame_to_be_available_and_switch_to_it((By.ID, "iframePaginas"))
+                EC.presence_of_element_located((By.ID, "iframePaginas"))
             )
+            driver.switch_to.frame(iframe)
+
+            # Aguarde 2 segundos
+            time.sleep(2)
             
             abrir_agendas_button = WebDriverWait(driver, 20).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, "#ctl00_cphContent_imbAgenda"))
             )
             abrir_agendas_button.click()
 
+            # Aguarde 2 segundos
+            time.sleep(2)
+
             relatorios_nao_voados_button = WebDriverWait(driver, 20).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, "#ctl00_cphContent_gdvReports > tbody > tr:nth-child(8) > td:nth-child(1) > input[type=image]"))
             )
             relatorios_nao_voados_button.click()
 
-            # --- Inserir Datas ---
-            campo_data_inicio = WebDriverWait(driver, 20).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, "#ctl00_cphContent_txtDataIniA"))
-            )
-            campo_data_inicio.send_keys(data_inicio.strftime("%d/%m/%Y"))
+            # Aguarde 2 segundos
+            time.sleep(2)
 
-            campo_data_fim = WebDriverWait(driver, 20).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, "#ctl00_cphContent_txtDataFinA"))
-            )
-            campo_data_fim.send_keys(data_fim.strftime("%d/%m/%Y"))
+            # --- Inserir Datas ---
+            for tentativa in range(3):  # Tenta até 3 vezes
+                try:
+                    campo_data_inicio = WebDriverWait(driver, 10).until(
+                        EC.element_to_be_clickable((By.CSS_SELECTOR, "#ctl00_cphContent_txtDataIniA"))
+                    )
+                    campo_data_inicio.click()
+                    time.sleep(2)
+                    campo_data_inicio.send_keys(data_inicio.strftime("%d/%m/%Y"))
+                    time.sleep(1)  # Aguarda um pouco para garantir que a data foi inserida
+                    break  # Sai do loop se a interação for bem-sucedida
+                except StaleElementReferenceException:
+                    print("Elemento 'Data Início' desatualizado. Tentando novamente...")
+                    time.sleep(1)  # Pequena pausa antes de tentar novamente
+
+            for tentativa in range(3):  # Tenta até 3 vezes
+                try:
+                    campo_data_fim = WebDriverWait(driver, 10).until(
+                        EC.element_to_be_clickable((By.CSS_SELECTOR, "#ctl00_cphContent_txtDataFinA"))
+                    )
+                    campo_data_fim.click()
+                    time.sleep(2)
+                    campo_data_fim.send_keys(data_fim.strftime("%d/%m/%Y"))
+                    time.sleep(1)  # Aguarda um pouco para garantir que a data foi inserida
+                    break  # Sai do loop se a interação for bem-sucedida
+                except StaleElementReferenceException:
+                    print("Elemento 'Data Fim' desatualizado. Tentando novamente...")
+                    time.sleep(1)  # Pequena pausa antes de tentar novamente
+
+
+            # Aguarde 2 segundos
+            time.sleep(2)
 
             # --- Selecionar Tipo de Arquivo ---
             tipo_saida = WebDriverWait(driver, 20).until(
