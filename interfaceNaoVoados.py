@@ -13,7 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException
+from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, TimeoutException
 from win10toast import ToastNotifier
 
 # Caminho para o ChromeDriver 
@@ -38,7 +38,12 @@ async def baixar_relatorio_nao_voado(data_inicio, data_fim, tipo_arquivo):
 
     # Configurar as preferências do Chrome para downloads
     options = webdriver.ChromeOptions()
-    prefs = {"download.default_directory": pasta_downloads}
+    prefs = {
+        "download.default_directory": pasta_downloads,
+        "download.prompt_for_download": False,  # Desativa a caixa de diálogo de download
+        "download.directory_upgrade": True,
+        "safebrowsing.enabled": True
+    }
     options.add_experimental_option("prefs", prefs)
 
     # Crie uma instância do serviço do ChromeDriver
@@ -162,15 +167,37 @@ async def baixar_relatorio_nao_voado(data_inicio, data_fim, tipo_arquivo):
             opcao_tipo.click()
 
             # --- Baixar Relatório ---
-            baixar_button = WebDriverWait(driver, 20).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, "#ctl00_cphContent_rptRelatorios_ctl01_imgStatus"))
+            # Encontrar todos os botões de download na tabela
+            botoes_download = WebDriverWait(driver, 20).until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, "#tblRepeater img[id*='_imgStatus']"))
             )
-            baixar_button.click()
-            time.sleep(5)  # Aguarda o download
+
+            # Clicar no último botão da lista
+            if botoes_download:
+                ultimo_botao = botoes_download[-1]  # Pega o último elemento da lista
+                ultimo_botao.click()
+            else:
+                print("Nenhum botão de download encontrado.")
+
+            # --- Lidar com o Alerta ---
+            try:
+                # Aguarda o alerta aparecer (ajuste o tempo limite se necessário)
+                WebDriverWait(driver, 10).until(EC.alert_is_present()) 
+
+                # Aceita o alerta
+                alerta = driver.switch_to.alert
+                alerta.accept()
+                print("Alerta aceito.")
+
+            except TimeoutException:
+                print("Alerta não encontrado. Prosseguindo...")
+
+            # Aguardar o download ser concluído (ajuste o tempo limite conforme necessário)
+            aguardar_download(driver, 30)  # Aguarda até 30 segundos
 
             # --- Renomear Arquivo ---
             nome_cliente = opcoes_cliente[i].text
-            renomear_arquivo(tipo_arquivo, nome_cliente)
+            renomear_arquivo(tipo_arquivo, nome_cliente, data_inicio, data_fim)  # Passa as datas para a função
 
             # --- Voltar para a página de Relatórios ---
             driver.back()  # Volta para a página anterior (Relatórios)
@@ -188,15 +215,31 @@ async def baixar_relatorio_nao_voado(data_inicio, data_fim, tipo_arquivo):
     finally:
         driver.quit()
 
-def renomear_arquivo(tipo_arquivo, nome_cliente):
+def renomear_arquivo(tipo_arquivo, nome_cliente, data_inicio, data_fim):
     """Função para renomear o arquivo baixado."""
     extensao = ".pdf" if tipo_arquivo == "PDF" else ".xls"
-    for arquivo in os.listdir(pasta_downloads):
-        if arquivo.startswith("Relatorio") and arquivo.endswith(extensao):
-            nome_antigo = os.path.join(pasta_downloads, arquivo)
-            nome_novo = os.path.join(pasta_downloads, f"Relatório Não Voados ({nome_cliente}){extensao}")
-            os.rename(nome_antigo, nome_novo)
-            break
+    nome_arquivo_esperado = f"Relatorio{extensao}"  # Nome padrão do arquivo baixado
+
+    # Aguarda o arquivo aparecer na pasta de downloads (ajuste o tempo limite se necessário)
+    tempo_limite = 30
+    tempo_inicio = time.time()
+    while time.time() - tempo_inicio <= tempo_limite:
+        for arquivo in os.listdir(pasta_downloads):
+            if arquivo == nome_arquivo_esperado:
+                # Formata as datas para o nome do arquivo
+                data_inicio_formatada = data_inicio.strftime("%d-%m-%Y")
+                data_fim_formatada = data_fim.strftime("%d-%m-%Y")
+
+                nome_antigo = os.path.join(pasta_downloads, arquivo)
+                nome_novo = os.path.join(pasta_downloads, f"{nome_cliente} {data_inicio_formatada} {data_fim_formatada}{extensao}")
+                os.rename(nome_antigo, nome_novo)
+                print(f"Arquivo renomeado para: {nome_novo}")
+                return
+
+        time.sleep(1)  # Aguarda 1 segundo antes de verificar novamente
+
+    print(f"Erro: Arquivo '{nome_arquivo_esperado}' não encontrado na pasta de downloads.")
+
 
 def notificar_conclusao(titulo="Automação Finalizada", mensagem="Download dos Relatórios Não Voados concluído!"):
     """Exibe uma notificação do Windows."""
@@ -213,6 +256,33 @@ def iniciar_download():
     tipo_arquivo = tipo_arquivo_var.get()
 
     asyncio.run(baixar_relatorio_nao_voado(data_inicio, data_fim, tipo_arquivo))
+
+def aguardar_download(driver, timeout):
+    """Aguarda o download ser concluído dentro do tempo limite."""
+    driver.execute_script("window.open()")
+    time.sleep(2)
+    driver.switch_to.window(driver.window_handles[1])
+    driver.get("about:downloads")
+
+    tempo_inicio = time.time()
+    while time.time() - tempo_inicio <= timeout:
+        try:
+            # Obtém a referência ao elemento a cada iteração
+            download_porcentagem = driver.execute_script(
+                "return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('#progress').value"
+            )
+            if download_porcentagem == 100:
+                driver.close()
+                driver.switch_to.window(driver.window_handles[0])
+                return True
+        except Exception as e:
+            print(f"Erro na verificação do download: {e}")  # Imprime o erro para depuração
+            pass  # Ignora o erro e continua verificando
+        time.sleep(1)
+    driver.close()
+    driver.switch_to.window(driver.window_handles[0])
+    print("Download não concluído no tempo limite.")
+    return False
 
 # --- Interface Gráfica (CustomTkinter) ---
 janela = ctk.CTk()
