@@ -1,0 +1,144 @@
+Relatório de Não Voados - Argoit PontesTur
+
+Este projeto automatiza o processo de agendamento e download de relatórios de "Não Voados" no sistema Argoit PontesTur.
+
+colar: "pip install -r requirements.txt" -> na pasta da automação
+
+Funcionalidades:
+
+Agendamento: Agenda o relatório para cada cliente, definindo a data de início, data de fim e tipo de arquivo (PDF ou EXCEL).
+
+Download: Baixa os relatórios que foram previamente agendados.
+
+Processo Completo: Executa o agendamento e download dos relatórios em sequência.
+
+Configurações: Permite definir um cliente inicial para iniciar o processo (útil para continuar de onde parou em caso de interrupção), ou processar todos os clientes.
+
+Log Detalhado: Gera um arquivo de log (log_automacao_nao_voados.txt) com informações detalhadas sobre cada etapa da automação, incluindo erros e clientes processados.
+
+Notificação: Exibe uma notificação do Windows ao final da automação.
+
+Pré-requisitos:
+
+Python 3.7 ou superior: https://www.python.org/downloads/
+
+Bibliotecas Python:
+
+selenium: Para interagir com o navegador.
+
+customtkinter: Para a interface gráfica.
+
+tkcalendar: Para o widget de seleção de data.
+
+win10toast: Para exibir notificações do Windows.
+
+configparser: Para gerenciar as configurações do projeto.
+
+ChromeDriver:
+
+Baixe a versão compatível com seu navegador Chrome: https://chromedriver.chromium.org/downloads
+
+Extraia o arquivo chromedriver.exe para a pasta do projeto.
+
+Instalação:
+
+Crie um ambiente virtual (opcional, mas recomendado):
+
+python -m venv .venv
+content_copy
+Use code with caution.
+Bash
+
+Ative o ambiente virtual:
+
+.venv\Scripts\activate
+content_copy
+Use code with caution.
+Bash
+
+Instale as bibliotecas:
+
+pip install -r requirements.txt
+content_copy
+Use code with caution.
+Bash
+
+Crie o arquivo requirements.txt na raiz do projeto com o seguinte conteúdo:
+
+selenium
+customtkinter
+tkcalendar
+win10toast
+configparser
+content_copy
+Use code with caution.
+Utilização:
+
+Configure o cliente inicial (opcional):
+
+Abra o arquivo configuracoes.ini.
+
+Na seção [INICIO], defina a chave nao_voados com o nome do cliente onde você deseja iniciar o processo.
+
+Para processar todos os clientes, deixe o valor em branco.
+
+Execute a interface:
+
+python interfaceNaoVoados.py
+content_copy
+Use code with caution.
+Bash
+
+Na interface:
+
+Selecione a data de início e data de fim para os relatórios.
+
+Escolha o tipo de arquivo (PDF ou EXCEL).
+
+Clique em um dos botões:
+
+"Agendar": Agenda os relatórios para todos os clientes (ou a partir do cliente inicial, se definido).
+
+"Baixar": Baixa os relatórios que foram previamente agendados.
+
+"Processo Completo": Executa o agendamento e download em sequência.
+
+"Configurações": Permite definir o cliente inicial ou processar todos os clientes.
+
+Acompanhe o progresso:
+
+O progresso da automação será exibido no console.
+
+Um arquivo de log detalhado será gerado em log_automacao_nao_voados.txt.
+
+Notificação:
+
+Ao finalizar o processo, uma notificação do Windows será exibida.
+
+Observações:
+
+Credenciais: O código atual usa credenciais fixas para login no sistema Argoit. Adapte o código para solicitar as credenciais do usuário ou use um método mais seguro para armazená-las.
+
+Seletores CSS: Os seletores CSS utilizados no código naoVoados.py podem precisar ser ajustados caso a estrutura do site da Argoit mude.
+
+Tempo de Espera: Os tempos de espera (time.sleep()) podem precisar ser ajustados dependendo da velocidade da sua conexão e do site da Argoit.
+
+Solução de Problemas:
+
+Consulte o arquivo de log (log_automacao_nao_voados.txt) para obter informações detalhadas sobre erros.
+
+Verifique se o ChromeDriver está na pasta do projeto e se a versão é compatível com seu navegador Chrome.
+
+Ajuste os tempos de espera (time.sleep()) se a automação estiver encontrando problemas de sincronização.
+
+Próximos Passos:
+
+Implementar um método mais seguro para armazenar as credenciais do usuário.
+
+Adicionar a funcionalidade de pausar e retomar o processo.
+
+Criar uma interface gráfica mais avançada com feedback visual do progresso.
+
+Contribuições:
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests.

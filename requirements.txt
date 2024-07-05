@@ -1,0 +1,5 @@
+selenium
+customtkinter
+tkcalendar
+win10toast
+configparser

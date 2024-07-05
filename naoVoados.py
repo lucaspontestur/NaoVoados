@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import Select
 from collections import defaultdict
+import configparser
 
 # Caminho para o ChromeDriver 
 chrome_driver_path = "chromedriver.exe"
@@ -43,6 +44,11 @@ async def executar_acao_por_cliente(data_inicio, data_fim, tipo_arquivo, apenas_
         apenas_baixar: Se True, baixa o relatório sem agendá-lo.
     """
     global erros_repetidos
+
+    # Carregar configurações
+    config = configparser.ConfigParser()
+    config.read('configuracoes.ini')
+    cliente_inicial = config.get('INICIO', 'nao_voados', fallback="")
 
     # Configurar as preferências do Chrome para downloads
     options = webdriver.ChromeOptions()
@@ -96,8 +102,16 @@ async def executar_acao_por_cliente(data_inicio, data_fim, tipo_arquivo, apenas_
                 try:
                     # Selecionar o cliente
                     select_cliente = Select(driver.find_element(By.CSS_SELECTOR, '#efeitoHeader > div.col-md-2.col-xs-2 > select'))
+                    nome_cliente = select_cliente.options[i].text
+
+                    # Verificar se há um cliente inicial definido
+                    if cliente_inicial and nome_cliente != cliente_inicial:
+                        print(f"Pulando cliente: {nome_cliente} (aguardando cliente inicial: {cliente_inicial})")
+                        continue
+
+                    cliente_inicial = ""  # Reinicia a variável após encontrar o cliente inicial
+
                     select_cliente.select_by_index(i)
-                    nome_cliente = select_cliente.first_selected_option.text
                     print(f"Processando cliente: {nome_cliente}...")
                     time.sleep(3)
 
