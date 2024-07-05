@@ -34,15 +34,7 @@ if not os.path.exists(pasta_downloads):
 erros_repetidos = defaultdict(lambda: {"contagem": 0, "cliente": ""})
 
 async def executar_acao_por_cliente(data_inicio, data_fim, tipo_arquivo, apenas_agendar=False, apenas_baixar=False):
-    """Executa a ação (agendar ou baixar) para cada cliente.
-
-    Args:
-        data_inicio: Data de início do relatório.
-        data_fim: Data de fim do relatório.
-        tipo_arquivo: Tipo de arquivo do relatório ("PDF" ou "EXCEL").
-        apenas_agendar: Se True, agenda o relatório sem baixá-lo.
-        apenas_baixar: Se True, baixa o relatório sem agendá-lo.
-    """
+    """Executa a ação (agendar ou baixar) para cada cliente."""
     global erros_repetidos
 
     # Carregar configurações
@@ -61,9 +53,17 @@ async def executar_acao_por_cliente(data_inicio, data_fim, tipo_arquivo, apenas_
     # Crie uma instância do navegador Chrome com as opções definidas
     driver = webdriver.Chrome(service=service, options=options)
 
-    # Redirecionar a saída padrão para um arquivo de log
+    # Definir o nome do arquivo de log com base na ação
+    if apenas_agendar:
+        nome_arquivo_log = 'log_agendamento_nao_voados.txt'
+    elif apenas_baixar:
+        nome_arquivo_log = 'log_download_nao_voados.txt'
+    else:
+        nome_arquivo_log = 'log_processo_completo_nao_voados.txt'
+
+    # Redirecionar a saída padrão para o arquivo de log
     original_stdout = sys.stdout
-    with open('log_automacao_nao_voados.txt', 'w') as f:
+    with open(nome_arquivo_log, 'w') as f:
         sys.stdout = f
         try:
             # Acesse o site

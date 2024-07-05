@@ -1,0 +1,76 @@
+Acessando o site...
+Inserindo usuário...
+Inserindo senha...
+Logando...
+Login realizado com sucesso!
+Loop iniciado...
+Processando cliente: 3 CORACOES...
+Acessando relatórios de 3 CORACOES...
+Mudando para o iframe de 3 CORACOES...
+Abrindo agendas de 3 CORACOES...
+Acessando relatórios não voados de 3 CORACOES...
+Inserindo datas para 3 CORACOES...
+Selecionando tipo de arquivo para 3 CORACOES...
+Baixando relatório de 3 CORACOES...
+Alerta aceito.
+Erro ao renomear arquivo '0e13fbaf-59ef-4b4e-a02e-fc2651b972b7.xls': [WinError 183] Não é possível criar um arquivo já existente: 'C:\\Users\\Lucas.marinho\\Documents\\Programação\\NaoVoados\\relatorios\\0e13fbaf-59ef-4b4e-a02e-fc2651b972b7.xls' -> 'C:\\Users\\Lucas.marinho\\Documents\\Programação\\NaoVoados\\relatorios\\Relatorio Nao Voados 3 CORACOES (05-07-2024 - 05-07-2024)..xls'
+Download de 3 CORACOES concluído!
+Voltando para a página inicial...
+3 CORACOES processado com sucesso!
+Processando cliente: A GERADORA...
+Acessando relatórios de A GERADORA...
+Mudando para o iframe de A GERADORA...
+Abrindo agendas de A GERADORA...
+Acessando relatórios não voados de A GERADORA...
+Inserindo datas para A GERADORA...
+Selecionando tipo de arquivo para A GERADORA...
+Erro ao processar cliente A GERADORA: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=126.0.6478.127)
+Stacktrace:
+	GetHandleVerifier [0x00007FF662363E52+31618]
+	(No symbol) [0x00007FF6622DB0B9]
+	(No symbol) [0x00007FF66219888A]
+	(No symbol) [0x00007FF66216DAE5]
+	(No symbol) [0x00007FF6622145A7]
+	(No symbol) [0x00007FF66222C131]
+	(No symbol) [0x00007FF66220CEB3]
+	(No symbol) [0x00007FF6621DA46B]
+	(No symbol) [0x00007FF6621DB001]
+	GetHandleVerifier [0x00007FF66266A02D+3202397]
+	GetHandleVerifier [0x00007FF6626B6A4D+3516285]
+	GetHandleVerifier [0x00007FF6626AC4C0+3473904]
+	GetHandleVerifier [0x00007FF662415D56+760454]
+	(No symbol) [0x00007FF6622E6B5F]
+	(No symbol) [0x00007FF6622E1CF4]
+	(No symbol) [0x00007FF6622E1E82]
+	(No symbol) [0x00007FF6622D122F]
+	(No symbol) [0x00007FF9A465257D]
+	RtlUserThreadStart [0x00007FF9A5A4AA58+40]
+
+Voltando para a página inicial...
+Erro durante a automacao: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=126.0.6478.127)
+Stacktrace:
+	GetHandleVerifier [0x00007FF662363E52+31618]
+	(No symbol) [0x00007FF6622DB0B9]
+	(No symbol) [0x00007FF66219888A]
+	(No symbol) [0x00007FF66216DAE5]
+	(No symbol) [0x00007FF6622145A7]
+	(No symbol) [0x00007FF66222C131]
+	(No symbol) [0x00007FF66220CEB3]
+	(No symbol) [0x00007FF6621DA46B]
+	(No symbol) [0x00007FF6621DB001]
+	GetHandleVerifier [0x00007FF66266A02D+3202397]
+	GetHandleVerifier [0x00007FF6626B6A4D+3516285]
+	GetHandleVerifier [0x00007FF6626AC4C0+3473904]
+	GetHandleVerifier [0x00007FF662415D56+760454]
+	(No symbol) [0x00007FF6622E6B5F]
+	(No symbol) [0x00007FF6622E1CF4]
+	(No symbol) [0x00007FF6622E1E82]
+	(No symbol) [0x00007FF6622D122F]
+	(No symbol) [0x00007FF9A465257D]
+	RtlUserThreadStart [0x00007FF9A5A4AA58+40]
+
+Automacao finalizada!
